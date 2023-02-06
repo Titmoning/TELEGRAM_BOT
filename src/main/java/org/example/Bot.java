@@ -60,45 +60,45 @@ public class Bot extends TelegramLongPollingBot {
 
     public void recogniseCommand(String text, SendMessage message) throws FiniteStateMachineException {
         setButtons(message);
-        /*if(text.equals("привет") || text.equals("здарова") || text.equals("hi")){
-            message.setText("Привет! Как дела?");
+        /*if(text.equals("РїСЂРёРІРµС‚") || text.equals("Р·РґР°СЂРѕРІР°") || text.equals("hi")){
+            message.setText("РџСЂРёРІРµС‚! РљР°Рє РґРµР»Р°?");
         }
-        if(text.equals("погода") || text.equals("какая погода?")){
-            message.setText("В каком городе хотите узнать погоду?");
+        if(text.equals("РїРѕРіРѕРґР°") || text.equals("РєР°РєР°СЏ РїРѕРіРѕРґР°?")){
+            message.setText("Р’ РєР°РєРѕРј РіРѕСЂРѕРґРµ С…РѕС‚РёС‚Рµ СѓР·РЅР°С‚СЊ РїРѕРіРѕРґСѓ?");
 
         }
-        if(text.equals("расскажи о себе") || text.equals("кто ты?")){
-            message.setText("Я информационный чат - бот о погоде.");
+        if(text.equals("СЂР°СЃСЃРєР°Р¶Рё Рѕ СЃРµР±Рµ") || text.equals("РєС‚Рѕ С‚С‹?")){
+            message.setText("РЇ РёРЅС„РѕСЂРјР°С†РёРѕРЅРЅС‹Р№ С‡Р°С‚ - Р±РѕС‚ Рѕ РїРѕРіРѕРґРµ.");
         }
-        if(text.equals("москва")){
+        if(text.equals("РјРѕСЃРєРІР°")){
             String URL = String.format("https://api.openweathermap.org/data/2.5/weather?q=%s&appid=cccf006b67c53e10fb5a4d501d49c392",text);
             message.setText(Nemain.getResponse(URL));
         }*/
         String state = turnstileStateMachine.getCurrentState().getName();
         System.out.println(state);
         System.out.println(text);
-        if (state.equals("Начальный") && text.equals("расскажи о погоде")) {
-            message.setText("В каком городе?");
+        if (state.equals("РќР°С‡Р°Р»СЊРЅС‹Р№") && text.equals("СЂР°СЃСЃРєР°Р¶Рё Рѕ РїРѕРіРѕРґРµ")) {
+            message.setText("Р’ РєР°РєРѕРј РіРѕСЂРѕРґРµ?");
             this.turnstileStateMachine.fire(new transitionToWeatherEvent());
             return;
         }
-        if (state.equals("Начальный") && text.equals("расскажи о себе")) {
-            message.setText("Я информационный чат-бот о погоде!");
+        if (state.equals("РќР°С‡Р°Р»СЊРЅС‹Р№") && text.equals("СЂР°СЃСЃРєР°Р¶Рё Рѕ СЃРµР±Рµ")) {
+            message.setText("РЇ РёРЅС„РѕСЂРјР°С†РёРѕРЅРЅС‹Р№ С‡Р°С‚-Р±РѕС‚ Рѕ РїРѕРіРѕРґРµ!");
             this.turnstileStateMachine.fire(new infoBotRequestEvent());
             return;
         }
-        if (state.equals("Погода") && text.equals("расскажи о себе")) {
+        if (state.equals("РџРѕРіРѕРґР°") && text.equals("СЂР°СЃСЃРєР°Р¶Рё Рѕ СЃРµР±Рµ")) {
             this.turnstileStateMachine.fire(new transitionFromWeatherToInfoEvent(message));
             return;
         }
-        //if (state.equals("Погода") && text.equals("расскажи о погоде")) {
+        //if (state.equals("РџРѕРіРѕРґР°") && text.equals("СЂР°СЃСЃРєР°Р¶Рё Рѕ РїРѕРіРѕРґРµ")) {
            // this.turnstileStateMachine.fire();
        // }
-        if(state.equals("Инфо") && text.equals("расскажи о погоде")){
+        if(state.equals("РРЅС„Рѕ") && text.equals("СЂР°СЃСЃРєР°Р¶Рё Рѕ РїРѕРіРѕРґРµ")){
             this.turnstileStateMachine.fire(new transitionFromInfoToWeatherEvent(message));
             return;
         }
-        if (state.equals("Погода")) {
+        if (state.equals("РџРѕРіРѕРґР°")) {
             this.turnstileStateMachine.fire(new weatherRequestEvent(text, message));
         }
         state = turnstileStateMachine.getCurrentState().getName();
@@ -106,30 +106,30 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     public synchronized void setButtons(SendMessage sendMessage) {
-        // Создаем клавиуатуру
+        // РЎРѕР·РґР°РµРј РєР»Р°РІРёСѓР°С‚СѓСЂСѓ
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         sendMessage.setReplyMarkup(replyKeyboardMarkup);
         replyKeyboardMarkup.setSelective(true);
         replyKeyboardMarkup.setResizeKeyboard(true);
         replyKeyboardMarkup.setOneTimeKeyboard(false);
 
-        // Создаем список строк клавиатуры
+        // РЎРѕР·РґР°РµРј СЃРїРёСЃРѕРє СЃС‚СЂРѕРє РєР»Р°РІРёР°С‚СѓСЂС‹
         List<KeyboardRow> keyboard = new ArrayList<>();
 
-        // Первая строчка клавиатуры
+        // РџРµСЂРІР°СЏ СЃС‚СЂРѕС‡РєР° РєР»Р°РІРёР°С‚СѓСЂС‹
         KeyboardRow keyboardFirstRow = new KeyboardRow();
-        // Добавляем кнопки в первую строчку клавиатуры
-        keyboardFirstRow.add(new KeyboardButton("Расскажи о себе"));
+        // Р”РѕР±Р°РІР»СЏРµРј РєРЅРѕРїРєРё РІ РїРµСЂРІСѓСЋ СЃС‚СЂРѕС‡РєСѓ РєР»Р°РІРёР°С‚СѓСЂС‹
+        keyboardFirstRow.add(new KeyboardButton("Р Р°СЃСЃРєР°Р¶Рё Рѕ СЃРµР±Рµ"));
 
-        // Вторая строчка клавиатуры
+        // Р’С‚РѕСЂР°СЏ СЃС‚СЂРѕС‡РєР° РєР»Р°РІРёР°С‚СѓСЂС‹
         KeyboardRow keyboardSecondRow = new KeyboardRow();
-        // Добавляем кнопки во вторую строчку клавиатуры
-        keyboardSecondRow.add(new KeyboardButton("Расскажи о погоде"));
+        // Р”РѕР±Р°РІР»СЏРµРј РєРЅРѕРїРєРё РІРѕ РІС‚РѕСЂСѓСЋ СЃС‚СЂРѕС‡РєСѓ РєР»Р°РІРёР°С‚СѓСЂС‹
+        keyboardSecondRow.add(new KeyboardButton("Р Р°СЃСЃРєР°Р¶Рё Рѕ РїРѕРіРѕРґРµ"));
 
-        // Добавляем все строчки клавиатуры в список
+        // Р”РѕР±Р°РІР»СЏРµРј РІСЃРµ СЃС‚СЂРѕС‡РєРё РєР»Р°РІРёР°С‚СѓСЂС‹ РІ СЃРїРёСЃРѕРє
         keyboard.add(keyboardFirstRow);
         keyboard.add(keyboardSecondRow);
-        // и устанваливаем этот список нашей клавиатуре
+        // Рё СѓСЃС‚Р°РЅРІР°Р»РёРІР°РµРј СЌС‚РѕС‚ СЃРїРёСЃРѕРє РЅР°С€РµР№ РєР»Р°РІРёР°С‚СѓСЂРµ
         replyKeyboardMarkup.setKeyboard(keyboard);
     }
 
@@ -176,9 +176,9 @@ public class Bot extends TelegramLongPollingBot {
 
 
     public Bot() {
-        State startingState = new State("Начальный");
-        State weatherState = new State("Погода");
-        State infoBotState = new State("Инфо");
+        State startingState = new State("РќР°С‡Р°Р»СЊРЅС‹Р№");
+        State weatherState = new State("РџРѕРіРѕРґР°");
+        State infoBotState = new State("РРЅС„Рѕ");
 
 
         Set<State> states = new HashSet<>();
@@ -188,7 +188,7 @@ public class Bot extends TelegramLongPollingBot {
 
 
         Transition weather = new TransitionBuilder()
-                .name("Погода")
+                .name("РџРѕРіРѕРґР°")
                 .sourceState(startingState)
                 .eventType(transitionToWeatherEvent.class)
                 .eventHandler(new transitionToWeather())
@@ -196,7 +196,7 @@ public class Bot extends TelegramLongPollingBot {
                 .build();
 
         Transition weatherRequest = new TransitionBuilder()
-                .name("Запрос погоды")
+                .name("Р—Р°РїСЂРѕСЃ РїРѕРіРѕРґС‹")
                 .sourceState(weatherState)
                 .eventType(weatherRequestEvent.class)
                 .eventHandler(new weatherRequest())
@@ -204,7 +204,7 @@ public class Bot extends TelegramLongPollingBot {
                 .build();
 
         Transition infoRequest = new TransitionBuilder()
-                .name("Инфо")
+                .name("РРЅС„Рѕ")
                 .sourceState(startingState)
                 .eventType(infoBotRequestEvent.class)
                 .eventHandler(new infoBotRequest())
@@ -212,7 +212,7 @@ public class Bot extends TelegramLongPollingBot {
                 .build();
 
         Transition fromWeatherToInfo = new TransitionBuilder()
-                .name("С погоды на инфо")
+                .name("РЎ РїРѕРіРѕРґС‹ РЅР° РёРЅС„Рѕ")
                 .sourceState(weatherState)
                 .eventType(transitionFromWeatherToInfoEvent.class)
                 .eventHandler(new transitionFromWeatherToInfoRequest())
@@ -220,7 +220,7 @@ public class Bot extends TelegramLongPollingBot {
                 .build();
 
         Transition fromInfoToWeather = new TransitionBuilder()
-                .name("С погоды на инфо")
+                .name("РЎ РїРѕРіРѕРґС‹ РЅР° РёРЅС„Рѕ")
                 .sourceState(infoBotState)
                 .eventType(transitionFromInfoToWeatherEvent.class)
                 .eventHandler(new transitionFromInfoToWeatherRequest())
@@ -273,7 +273,7 @@ public class Bot extends TelegramLongPollingBot {
                 System.out.println(lat);
                 JSONObject main = (JSONObject) jo.get("main");
                 double temp = (double) main.get("temp");
-                weatherRequestEvent.message.setText("Погода в " + name + ": " + description +", " + "температура: " + temp + "°C.");
+                weatherRequestEvent.message.setText("РџРѕРіРѕРґР° РІ " + name + ": " + description +", " + "С‚РµРјРїРµСЂР°С‚СѓСЂР°: " + temp + "В°C.");
             } catch (IOException | ParseException e) {
                 System.out.println(e);
                 throw new RuntimeException(e);
@@ -295,7 +295,7 @@ public class Bot extends TelegramLongPollingBot {
 
         @Override
         public void handleEvent(transitionFromWeatherToInfoEvent transitionFromWeatherToInfoEvent) throws Exception {
-            transitionFromWeatherToInfoEvent.message.setText("Я информационный чат-бот о погоде!");
+            transitionFromWeatherToInfoEvent.message.setText("РЇ РёРЅС„РѕСЂРјР°С†РёРѕРЅРЅС‹Р№ С‡Р°С‚-Р±РѕС‚ Рѕ РїРѕРіРѕРґРµ!");
         }
     }
 
@@ -303,7 +303,7 @@ public class Bot extends TelegramLongPollingBot {
 
         @Override
         public void handleEvent(transitionFromInfoToWeatherEvent transitionFromInfoToWeatherEvent) throws Exception {
-            transitionFromInfoToWeatherEvent.message.setText("В каком городе?");
+            transitionFromInfoToWeatherEvent.message.setText("Р’ РєР°РєРѕРј РіРѕСЂРѕРґРµ?");
         }
     }
 }
